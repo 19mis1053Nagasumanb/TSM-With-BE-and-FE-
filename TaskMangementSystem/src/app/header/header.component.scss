@@ -1,0 +1,58 @@
+.app-header {
+  // width: 60%;
+  // margin-left: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: #8F4D9F;
+  // background: linear-gradient(to bottom , #2c0a4c, #450d80);
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+
+  .header-logo {
+    width: 40px; // Adjust size as needed
+    height: auto;
+    margin-right: 0.5rem; // Space between the logo and the title
+  }
+
+  h1 {
+    font-size: 1.5rem; // Adjust for title size
+    margin: 0; 
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+
+    a {
+      color: #ffffffcc;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+
+      &.active {
+        color: #ffffff;
+        font-weight: bold;
+        border-bottom: 2px solid #ffffff;
+      }
+
+      &:hover {
+        color: #ffffff;
+      }
+    }
+  }
+
+  // Responsive styling
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+
+    .nav-links {
+      margin-top: 0.5rem;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+}

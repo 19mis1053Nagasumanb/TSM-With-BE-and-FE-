@@ -1,0 +1,9 @@
+<header class="app-header">
+  <img src="assets/images/logo.jpg" alt="Logo" class="header-logo" /> 
+  <h1>Task Management System</h1>
+  <nav class="nav-links" *ngIf="!isRegisterPage">
+    <a routerLink="/task-form" routerLinkActive="active">Entry Form</a>
+    <a routerLink="/task-list" routerLinkActive="active">List</a>
+  </nav> 
+
+</header>

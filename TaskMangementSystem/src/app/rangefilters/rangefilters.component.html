@@ -1,0 +1,106 @@
+<div class="filters-wrapper">
+  <div class="filters-container">
+    <!-- Priority Filter -->
+    <div class="filter-item">
+      <ng-select
+        [items]="priorityOptions"
+        bindLabel="name"
+        bindValue="value"
+        [(ngModel)]="selectedPriority"
+        placeholder="Priority"
+        (change)="applyFilters()"
+      >
+      </ng-select>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="filter-item">
+      <ng-select
+        [items]="statusOptions"
+        bindLabel="name"
+        bindValue="value"
+        [(ngModel)]="selectedStatus"
+        placeholder="Status"
+        (change)="applyFilters()"
+      >
+      </ng-select>
+    </div>
+
+    <!-- Date Range Filter -->
+    <div class="filter-item">
+      <div class="date-range-container">
+        <div>
+          <label for="startDate">Start Date</label>
+          <input
+            id="startDate"
+            type="date"
+            [(ngModel)]="startDate"
+            (change)="onStartDateChange()"
+            [max]="maxDate"
+            placeholder="Start Date"
+          />
+        </div>
+        <div>
+          <label for="endDate">End Date</label>
+          <input
+            id="endDate"
+            type="date"
+            [(ngModel)]="endDate"
+            (change)="applyFilters()"
+            [min]="startDate"
+            [max]="maxDate"
+            placeholder="End Date"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <div class="filter-options">
+        <button
+          [class.active]="selectedField === 'name'"
+          (click)="selectField('name')"
+          class="filter-button"
+        >
+          Name
+        </button>
+        <button
+          [class.active]="selectedField === 'task'"
+          (click)="selectField('task')"
+          class="filter-button"
+        >
+          Task
+        </button>
+      </div>
+
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Search..."
+        (input)="search()"
+        class="search-input"
+      />
+      <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-button">❌</button>
+      <button *ngIf="!searchQuery"  (click)="search()" class="search-button">🔍</button>
+
+      <!-- Suggestions List -->
+      <div *ngIf="searchResults.length > 0" class="results">
+        <div
+          *ngFor="let result of searchResults"
+          class="result-item"
+          (click)="selectSuggestion(result)"
+        >
+          <p>{{ result }}</p>
+        </div>
+      </div>
+      <!-- No matches found message -->
+      <div *ngIf="searchResults.length === 0 && searchQuery" class="no-matches">
+        <p>No matches found</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error Message -->
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>

@@ -1,0 +1,101 @@
+<div class="container body">
+    <form (ngSubmit)="onSubmit(entryForm)" #entryForm="ngForm">
+        <div>
+            <label for="date">Date:</label>
+            <input 
+              type="date" 
+              [(ngModel)]="entry.date" 
+              [value]="getFormattedDate()" 
+              id="date" 
+              (change)="onDateChange($event)" 
+              name="date" 
+              [max]="maxDate"
+              required>
+        </div>
+  
+      <!-- <div>
+        <label for="day">Day:</label>
+        <input type="text" id="day" name="day" [value]="entry.day" placeholder="Invalid date" readonly>
+      </div> -->
+  
+      <div style="display: flex; align-items: center;">
+        <div style="margin-right: 8px; width: 100%;">
+          <label for="time">Time:</label>
+          <input type="time" [value]="getFormattedTime()" id="time" (change)="onTimeChange($event)" name="time" [(ngModel)]="entry.time" [ngModelOptions]="{standalone: true}" required>
+        </div>
+      </div>
+  
+      <!-- <div>
+        <label for="name">Name:</label>
+        <select id="name" name="name" [(ngModel)]="entry.name" (change)="onNameChange($event)" required>
+          <option value="" disabled>Assign Name</option>
+          <option *ngFor="let name of names" [value]="name">{{ name }}</option>
+          <option value="addNew">ADD New</option>
+        </select>
+      </div> -->
+  
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name"[(ngModel)]="entry.name" required>
+      </div>
+      <div>
+        <label for="taskname">Task Title & Details:</label>
+        <textarea id="taskname" name="taskname" [(ngModel)]="entry.task" required></textarea>
+      </div> 
+      <!-- Task Description
+Task Title & Details
+Task Overview
+Task Name & Description
+Task Summary
+Task Title and Details
+Task Details
+Work Description
+Task Brief
+Task and Plan -->
+  
+      <div>
+        <label for="status">Status:</label>
+        <select id="status" name="status" [(ngModel)]="entry.status" required>
+          <option value="" disabled>Select Status</option>
+          <option value="TODO">TODO</option>
+          <option value="IN_PROGRESS">IN_PROGRESS</option>
+          <option value="Done">DONE</option>
+          <option value="ON_HOLD">ON_HOLD</option>
+          <option value="PENDING">PENDING</option>
+          <option value="IN_TEST">IN_TEST</option>
+
+        </select>
+      </div>
+  
+      <div>
+        <label for="priority">priority:</label>
+        <select name="priority" id="priority" [(ngModel)]="entry.priority" required>
+          <option value="" disabled>Select priority</option>
+          <option value="URGENT">URGENT</option>
+          <option value="HIGH">HIGH</option>
+          <option value="NORMAL">NORMAL</option>
+          <option value="LOW">LOW</option>
+        </select>
+      </div>
+  
+      <div>
+        <label for="logHours">Log Hours:</label>
+        <input
+          type="text"
+          id="logHours"
+          [(ngModel)]="entry.logHours"
+          name="logHours"
+          required
+          placeholder="e.g.,hh:mm"
+          title="Enter time in format 'Xhrs Ymin', e.g., 'hh:mm'"
+        >
+      </div>
+  
+      <button type="submit" [disabled]="!entryForm.form.valid">Submit</button>
+  
+      <div *ngIf="successMessageVisible" class="toast-notification">
+        Task saved successfully!
+      </div>
+    </form>
+  </div>
+  

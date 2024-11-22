@@ -1,0 +1,61 @@
+<div class="register-container">
+  <div class="image-container">
+    <img src="assets/images/register.png" alt="Side Image" />
+  </div>
+  <div class="form-container">
+    <div class="form-sub-container">
+      <h2 class="header-text" *ngIf="isRegisterMode">Create an Account</h2>
+      <h2 class="header-text" *ngIf="!isRegisterMode">Welcome Back!</h2>
+
+      <!-- Separator -->
+      <div class="separator"></div>
+
+      <!-- Register Form -->
+      <form *ngIf="isRegisterMode" (ngSubmit)="onRegister()">
+        <div class="form-group">
+          <label for="name">Name<span>*</span></label>
+          <input type="text" id="name" name="name" [(ngModel)]="name" minlength="4" required #nameInput="ngModel" placeholder="Display Name of Slack" />
+          <div *ngIf="nameInput.invalid && nameInput.touched" class="error">*Name must be at least 4 characters long.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email<span>*</span></label>
+          <input type="email" id="email" name="email" [(ngModel)]="email" pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|techatcore\.com)$" required #emailInput="ngModel" placeholder="@gmail.com / @techatcore.com" />
+          <div *ngIf="emailInput.invalid && emailInput.touched" class="error">*Email must be in the format gmail.com or techatcore.com.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password<span>*</span></label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}" required #passwordInput="ngModel" />
+          <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error">*Password must contain at least one uppercase and one lowercase letter.</div>
+        </div>
+
+        <button type="submit" class="btn">Register</button>
+      </form>
+
+      <!-- Login Form -->
+      <form *ngIf="!isRegisterMode" (ngSubmit)="onLogin()">
+        <div class="form-group">
+          <label for="email">Email<span>*</span></label>
+          <input type="email" id="email" name="email" [(ngModel)]="email" pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|techatcore\.com)$" required #loginEmailInput="ngModel" placeholder="@gmail.com / @techatcore.com" />
+          <div *ngIf="loginEmailInput.invalid && loginEmailInput.touched" class="error">*Email must be in the format gmail.com or techatcore.com.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password<span>*</span></label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}" required #loginPasswordInput="ngModel" />
+          <div *ngIf="loginPasswordInput.invalid && loginPasswordInput.touched" class="error">*Password must contain at least one uppercase and one lowercase letter.</div>
+        </div>
+        <button type="submit" class="btn">Login</button>
+      </form>
+
+      <!-- Link to toggle between forms -->
+      <div class="toggle-link" *ngIf="!isRegisterMode">
+        <p>No account? <a href="#" (click)="toggleForm(true)">Register</a></p>
+      </div>
+      <div class="toggle-link" *ngIf="isRegisterMode">
+        <p>Already have an account? <a href="#" (click)="toggleForm(false)">Login</a></p>
+      </div>
+    </div>
+  </div>
+</div>

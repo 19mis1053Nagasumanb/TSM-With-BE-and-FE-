@@ -1,0 +1,127 @@
+<!-- <app-search (resultsUpdated)="search($event)" [class.blurred]="isEditingTask" ></app-search> -->
+<app-rangefilters (filteredTasks)="onFilteredTasks($event)"></app-rangefilters>
+<div class="task-container" [class.blurred]="isEditingTask">
+  <table> 
+    <thead>
+      <tr>
+        <th>Date
+          <button class="btn-sort" (click)="toggleSort('date')">
+            <span [innerHTML]="sortIcon('date')" [ngClass]="SortIconClass('date')"></span>
+          </button>
+        </th>
+        <th>Day
+          <button class="btn-sort" (click)="toggleSort('day')">
+            <span [innerHTML]="sortIcon('day')" [ngClass]="SortIconClass('day')"></span>
+          </button>
+        </th>
+        <th>Time
+          <button class="btn-sort" (click)="toggleSort('time')">
+            <span [innerHTML]="sortIcon('time')"[ngClass]="SortIconClass('time')"></span>
+          </button>
+        </th>
+        <th>Name
+          <button class="btn-sort" (click)="toggleSort('name')">
+            <span [innerHTML]="sortIcon('name')"[ngClass]="SortIconClass('name')"></span>
+          </button>
+        </th>
+        <th>Task Name
+          <button class="btn-sort" (click)="toggleSort('task')">
+            <span [innerHTML]="sortIcon('task')"[ngClass]="SortIconClass('task')"></span>
+          </button>
+        </th>
+        <th>Status
+          <button class="btn-sort" (click)="toggleSort('status')">
+            <span [innerHTML]="sortIcon('status')"[ngClass]="SortIconClass('status')"></span>
+          </button>
+        </th>
+        <th>Priority
+          <button class="btn-sort" (click)="toggleSort('priority')">
+            <span [innerHTML]="sortIcon('priority')" [ngClass]="SortIconClass('priority')"></span>
+          </button>
+        </th>
+        <th>Log Hours
+          <button class="btn-sort" (click)="toggleSort('logHours')">
+            <span [innerHTML]="sortIcon('logHours')" [ngClass]="SortIconClass('logHours')"></span>
+          </button>
+        </th>
+        <th>Actions</th>
+        
+      </tr>
+      
+    </thead>
+
+
+    <tbody>
+      
+      
+      
+
+      <tr *ngFor="let task of paginatedTasks">
+
+        <td>{{ task.date | date:'yyyy-MM-dd' }}</td>
+        <td>{{ task.day }}</td>
+        <td>{{ formatTime(task.time) }}</td> 
+        <td>{{ task.name }}</td>
+        <td>{{ task.task }}</td>
+        <!-- <td>{{ task.status }}</td> --> 
+         <td [ngStyle]="{'color': getStatusColor(task.status)}">{{task.status}}</td>
+        <!-- <td>{{ task.priority }}</td> --> 
+        <td [ngStyle]="{'color': getPriorityColor(task.priority)}">{{ task.priority }}</td>
+
+        <td>{{ task.logHours }}</td>
+        <td>
+          <button class="edit-button" (click)="startEditTask(task)">✏️</button>
+          <button class="delete-button" *ngIf="task.id" (click)="deleteTask(task.id)">🗑️</button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+</div>
+<div class="pagination-controls">
+  <div>
+    <button *ngFor="let page of getPageNumbers()" [class.active]="page - 1 === currentPage" (click)="goToPage(page)">
+      {{ page }}
+    </button>
+  </div>
+</div> 
+
+<div *ngIf="isEditingTask" class="edit-overlay" (click)="toggleEditMode(true)">
+  <div class="edit-form">
+    <h2>Edit Task</h2> 
+
+    <form (ngSubmit)="updateTask()">
+      <!-- <label for="date">Date:</label>
+      <input [(ngModel)]="editedTask!.date" id="date" name="date" type="text" readonly />
+
+      <label for="day">Day:</label>
+      <input [(ngModel)]="editedTask!.day" id="day" name="day" type="text" readonly />
+
+      <label for="time">Time:</label>
+      <input [(ngModel)]="editedTask!.time" id="time" name="time" type="text" readonly /> -->
+
+      <label for="name">Name:</label>
+      <input [(ngModel)]="editedTask!.name" id="name" name="name" type="text" required />
+
+      <label for="task">Task Name:</label>
+      <input [(ngModel)]="editedTask!.task" id="task" name="task" type="text" required />
+
+      <label for="status">Status:</label>
+      <select [(ngModel)]="editedTask!.status" id="status" name="status">
+        <option *ngFor="let option of statusOptions" [value]="option">{{ option }}</option>
+      </select>
+
+      <label for="priority">Priority:</label>
+      <input [(ngModel)]="editedTask!.priority" id="priority" name="priority" type="text" readonly />
+
+      <label for="logHours">Log Hours:</label>
+      <input [(ngModel)]="editedTask!.logHours" id="logHours" name="logHours" type="text" required />
+
+      <div class="form-buttons">
+        <button type="submit">Update</button>
+        <button type="button" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

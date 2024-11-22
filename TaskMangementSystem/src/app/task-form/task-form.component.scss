@@ -1,0 +1,51 @@
+.container {
+    max-width: 600px; /* Limit the width of the form */
+    margin: 20px auto; /* Center the form on the page */
+    padding: 15px; /* Adjusted padding for a smaller look */
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    
+    label {
+      display: block;
+      margin-bottom: 3px; /* Reduced margin */
+      font-weight: bold;
+      font-size: 0.9em; /* Smaller font size */
+    }
+  
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 6px; /* Reduced padding */
+      margin-bottom: 10px; /* Reduced margin */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9em; /* Smaller font size */
+    }
+  
+    button {
+      padding: 8px 12px; /* Adjusted button padding */
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em; /* Smaller font size */
+  
+      &:disabled {
+        background-color: #ccc;
+      }
+    }
+  
+    .toast-notification {
+      margin-top: 10px;
+      padding: 8px; /* Adjusted padding for notification */
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+      font-size: 0.9em; /* Smaller font size */
+    }
+  }
+  

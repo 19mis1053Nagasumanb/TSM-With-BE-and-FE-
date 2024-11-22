@@ -1,0 +1,11 @@
+{
+    "/optimizedes": {
+      "target": "http://localhost:9200",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    }
+  }
+  
+
+  

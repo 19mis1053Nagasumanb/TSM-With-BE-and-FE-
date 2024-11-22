@@ -1,0 +1,66 @@
+.footer {
+    background-color: black; // Light background for the footer
+    padding: 1rem 1.5rem; // Reduced padding to decrease height
+    text-align: center; // Center text by default
+    font-family: Arial, sans-serif; // Clean and modern font
+  
+    .footer-content {
+      display: flex;
+      flex-direction: column; // Stack items vertically by default
+      align-items: center; // Center align the content horizontally
+      justify-content: center;
+    }
+  
+    .footer-left {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem; // Reduced space between the left section and horizontal line
+  
+      .footer-image {
+        width: 80px; // Reduced image size
+        height: 80px; // Reduced image size
+        margin-right: 1.5rem; // Reduced space between image and description
+        object-fit: cover; // Ensure the image stays proportionally correct
+        border-radius: 20px;
+      }
+  
+      .footer-description {
+        font-size: 0.9rem; // Slightly smaller text
+        color: white; // Slightly darker color for the text
+        line-height: 1.4; // Improved line height for readability
+        max-width: 500px; // Limit width for better readability
+        text-align: left; // Align the description text to the left
+      }
+    }
+  
+    .footer-line {
+      width: 80%; // Horizontal line width
+      border: 0;
+      border-top: 2px solid #dee2e6; // Light gray line for subtle separation
+      margin: 1.5rem auto; // Reduced margin to decrease space between line and text
+    }
+  
+    .footer-rights {
+      font-size: 0.875rem; // Slightly smaller font size for rights statement
+      color: white; // Light gray for less emphasis
+      margin-top: 1rem; // Reduced space between the line and rights statement
+    }
+  
+    // Responsive styles for smaller screens
+    @media (max-width: 768px) {
+      .footer-content {
+        padding: 1rem; // Reduce padding on smaller screens
+      }
+  
+      .footer-left {
+        flex-direction: column; // Stack items vertically on small screens
+        text-align: center; // Center text on smaller screens
+      }
+  
+      .footer-image {
+        margin-right: 0; // Remove the margin for better alignment
+        margin-bottom: 1rem; // Add margin below the image for spacing
+      }
+    }
+  }
+  

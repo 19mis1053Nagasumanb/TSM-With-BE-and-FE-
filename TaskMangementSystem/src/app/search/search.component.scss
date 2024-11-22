@@ -1,0 +1,186 @@
+.search-container {
+  max-width: 450px;
+  width: 100%;
+  margin: auto;
+  padding: 1em;
+  // background-color: #F9F9F9;
+  border-radius: 8px;
+  position: absolute;
+  right: 95px;
+  top: 60px;
+  z-index: 1000; 
+
+  transition: filter 0.3s ease;
+
+  &.blurred {
+    filter: blur(5px);
+    pointer-events: none;
+  }
+
+  .search-bar {
+    display: flex;
+    position: relative;
+    align-items: center;
+    background-color: #E1D0EA;
+    border-radius: 20px;
+    padding: 8px;
+    width: 100%;
+
+    input {
+      border: none;
+      background: transparent;
+      outline: none;
+      flex: 1;
+      padding: 5px;
+      width: 100%;
+      
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  .filter-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    button {
+      background-color: #D0C5DB;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &.active {
+        background-color: #8F4D9F;
+        color: white;
+      }
+    }
+  }
+
+  .data-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #F5F5F5;
+      font-weight: bold;
+    }
+  }
+
+  .results {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 3px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+
+    .result-item {
+      padding: 8px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      background-color: #F9F9F9;
+      border-bottom: 1px solid #ddd;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #ECECEC;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .filter-button {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #F5F5F5;
+    border: 1px solid #ddd;
+    outline: none;
+  }
+
+  .clear-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 16px;
+    padding: 0 8px;
+    position: absolute;
+    right: 40px;
+  }
+}
+
+.task-container.blurred,
+.search-container.blurred {
+  filter: blur(5px);
+}
+
+
+/* Responsive adjustments for Search Component */
+@media (max-width: 1024px) {
+  .search-container {
+    max-width: 80%;
+    right: 40px;
+    top: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    max-width: 90%;
+    right: 20px;
+    top: 80px;
+    padding: 1em 0.5em;
+
+    .filter-options {
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .clear-button {
+      right: 10px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    top: 60px;
+    right: 10px;
+    padding: 1em 0.5em;
+
+    .data-table th, .data-table td {
+      padding: 5px;
+      font-size: 12px;
+    }
+
+    .results .result-item {
+      font-size: 10px;
+      padding: 6px 8px;
+    }
+
+    .search-bar input {
+      font-size: 14px;
+    }
+  }
+}

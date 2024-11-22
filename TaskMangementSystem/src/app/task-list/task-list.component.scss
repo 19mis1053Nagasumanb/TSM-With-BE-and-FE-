@@ -1,0 +1,216 @@
+.task-container {
+  width: 100%;
+  margin: 0 auto;
+  overflow-x: auto;
+
+  &.blurred {
+    filter: blur(5px);
+  }
+
+  table {
+    width: 90%;
+    margin-left: 65px;
+    margin-top: 70px;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      border-bottom: 2px solid #ddd;
+      font-size: 14px;
+    }
+
+    td {
+      font-size: 12px;
+    }
+
+    // Apply alternating colors for table rows
+    tr:nth-child(odd) {
+      background-color:  #ffffff; // Light gray for odd rows
+    }
+
+    tr:nth-child(even) {
+      background-color:#f9f9f9 ; // White for even rows
+    }
+
+    // Add hover effect for table rows
+    tr:hover {
+      background-color: #e6f7ff; // Change to your desired hover color
+      color: #000; // Optional: Change text color on hover
+    }
+
+    button {
+      cursor: pointer;
+      padding: 5px;
+      margin: 0 2px;
+      border: none;
+      color: black;
+      border-radius: 4px;
+
+      &.edit-button:hover {
+        background-color: orange;
+      }
+
+      &.delete-button:hover {
+        background-color: red;
+      }
+      
+    }
+  }
+
+  .btn-sort span {
+    font-size: 16px; /* Adjust the size of the arrow symbol */
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+  
+  .icon-green {
+    color: green; /* Green for ascending */
+  }
+  
+  .icon-red {
+    color: red; /* Red for descending */
+  }
+  
+  .icon-default {
+    color: gray; /* Default icon color */
+  }
+  
+}
+
+
+.edit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .edit-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+      color: #333;
+    }
+    
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input,
+    select {
+      // width: 100%;
+      width: calc(100% - 16px);
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+
+        &:first-child {
+          background-color: #2Ba745;
+
+          &:hover {
+            background-color: #218838;
+          }
+        
+        }
+
+        &:last-child {
+          background-color: #dc3545;
+
+          &:hover {
+            background-color: #c82333;
+          }
+        }
+          &:hover {
+          background-color: #3c00b3;
+        }
+      } 
+      
+    }
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0; // Space above and below the pagination
+
+  button {
+    padding: 10px 15px;
+    margin: 0 5px; // Space between buttons
+    border: none;
+    border-radius: 50px;
+    background-color: white; // Background color
+    color: #007bff; // Text color
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &:hover {
+      background-color: #007bff; // Change background on hover
+      color: white; // Change text color on hover
+    }
+
+    &.active {
+      background-color: #007bff; // Active button background
+      color: white; // Active button text color
+    }
+  }
+}
+
+.no-data-message {
+  text-align: center;
+  color: #ff0000;
+  font-size: 1.5em;
+  margin-top: 20px;
+}
+
+
+
+
+
+
