@@ -1,20 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit {
-  isRegisterPage: boolean = false;
+export class HeaderComponent {
+  isAuthPage: boolean = false;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Listen for route changes to update `isRegisterPage`
-    this.router.events.subscribe(() => {
-      this.isRegisterPage = this.router.url.includes('/register');
+    this.checkCurrentRoute();
+
+    // Subscribe to route changes to dynamically update the state
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.checkCurrentRoute();
+      }
     });
   }
+
+  private checkCurrentRoute(): void {
+    const authRoutes = ['/login', '/signup'];
+    this.isAuthPage = authRoutes.includes(this.router.url);
+  }
 }
+
+  
+

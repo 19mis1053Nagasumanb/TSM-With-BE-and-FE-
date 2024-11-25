@@ -1,16 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Task } from '../Task';
 import { TaskService } from '../task.service';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-task-form',
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.scss']
 })
-export class TaskFormComponent {
-  constructor(private taskService: TaskService , private router:Router) {}
+export class TaskFormComponent implements OnInit {
+  constructor(private taskService: TaskService , private router:Router , private authService: AuthService) {}
   maxDate: string = new Date().toISOString().split('T')[0];  
 
 
@@ -24,6 +25,12 @@ export class TaskFormComponent {
     priority: '',
     logHours: ''
   };
+
+  username: string | null = null;
+
+  ngOnInit(): void {
+    this.username = this.authService.getUsername();  // Get username from AuthService
+  }
   
   names: string[] = []; 
   successMessageVisible = false;
