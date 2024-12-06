@@ -19,7 +19,7 @@ export class TaskFormComponent implements OnInit {
     date: '',
     day: '',
     time: '',
-    name: '',
+    username: '',
     task: '',
     status: '',
     priority: '',
@@ -85,6 +85,7 @@ export class TaskFormComponent implements OnInit {
         date: epochDate, // Set epoch date
         time: timeInMillis, // Set time in milliseconds
       };
+      
   
       console.log('Payload to be sent:', payload);
   
@@ -136,6 +137,6 @@ export class TaskFormComponent implements OnInit {
 
  
   onNameChange(event: any): void {
-    this.entry.name = event.target.value;
+    this.entry.username = event.target.value;
   }
 }

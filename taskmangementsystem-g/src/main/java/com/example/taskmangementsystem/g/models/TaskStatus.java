@@ -1,4 +1,4 @@
-package com.example.taskmangementsystem.g.entity;
+package com.example.taskmangementsystem.g.models;
 
 public enum TaskStatus {
     TODO("todo"),

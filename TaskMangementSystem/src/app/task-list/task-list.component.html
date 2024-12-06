@@ -19,7 +19,7 @@
             <span [innerHTML]="sortIcon('time')"[ngClass]="SortIconClass('time')"></span>
           </button>
         </th>
-        <th>Name
+        <th>username
           <button class="btn-sort" (click)="toggleSort('name')">
             <span [innerHTML]="sortIcon('name')"[ngClass]="SortIconClass('name')"></span>
           </button>
@@ -61,7 +61,7 @@
         <td>{{ task.date | date:'yyyy-MM-dd' }}</td>
         <td>{{ task.day }}</td>
         <td>{{ formatTime(task.time) }}</td> 
-        <td>{{ task.name }}</td>
+        <td>{{ task.username }}</td>
         <td>{{ task.task }}</td>
         <!-- <td>{{ task.status }}</td> --> 
          <td [ngStyle]="{'color': getStatusColor(task.status)}">{{task.status}}</td>
@@ -72,7 +72,9 @@
         <td>
           <button class="edit-button" (click)="startEditTask(task)">✏️</button>
           <button class="delete-button" *ngIf="task.id" (click)="deleteTask(task.id)">🗑️</button>
-
+          
+          
+        
         </td>
       </tr>
     </tbody>
@@ -101,8 +103,8 @@
       <label for="time">Time:</label>
       <input [(ngModel)]="editedTask!.time" id="time" name="time" type="text" readonly /> -->
 
-      <label for="name">Name:</label>
-      <input [(ngModel)]="editedTask!.name" id="name" name="name" type="text" required />
+      <label for="username">username:</label>
+      <input [(ngModel)]="editedTask!.username" id="username" name="username" type="text" required />
 
       <label for="task">Task Name:</label>
       <input [(ngModel)]="editedTask!.task" id="task" name="task" type="text" required />

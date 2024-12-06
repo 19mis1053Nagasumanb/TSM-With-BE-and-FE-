@@ -3,6 +3,7 @@
   import { Task } from '../Task';
 import { response } from 'express';
 import { error } from 'console';
+import { AuthService } from '../auth.service';
 
   @Component({
     selector: 'app-rangefilters',
@@ -14,7 +15,12 @@ import { error } from 'console';
     maxDate: string = new Date().toISOString().split('T')[0];  
     @Output() filtersChanged = new EventEmitter<any>();
 
-
+    public getAuthHeaders(): { [header: string]: string } {
+      const token = localStorage.getItem('jwtToken');
+      return {
+        Authorization: `Bearer ${token}`,
+      };
+    }
     
     selectedPriority: string = '';
     selectedStatus: string = '';
@@ -46,7 +52,7 @@ import { error } from 'console';
 
 
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient , private authService: AuthService) {}
 
     onStartDateChange(): void {
       // Clear end date if start date is changed
@@ -63,12 +69,6 @@ import { error } from 'console';
 
       this.errorMessage ='';
 
-      // console.log("Selected Filters:", {
-      //   selectedPriority: this.selectedPriority,
-      //   selectedStatus: this.selectedStatus,
-      //   startDate: this.startDate,
-      //   endDate: this.endDate,
-      // }); 
 
       const filters = {
         priority:this.selectedPriority,
@@ -88,7 +88,7 @@ import { error } from 'console';
           return;
         }
       }
-      this.errorMessage = ''; // Reset error message //hold
+      this.errorMessage = ''; 
 
       // Construct the query
       const filterQuery = this.constructFilterQuery();
@@ -97,7 +97,6 @@ import { error } from 'console';
       // Make HTTP request to fetch filtered data
       this.http.post('optimizedes/_search', filterQuery).subscribe(
         (response: any) => {
-          // console.log('Filtered Data:', response);
           const filteredData = response.hits.hits.map((hit: any) => ({
             ...hit._source,
             date: hit._source.date ? this.formatDate(hit._source.date) : '',
@@ -108,7 +107,6 @@ import { error } from 'console';
           if (filteredData.length ===0 ) {
             this.errorMessage = "No Data fonund on selceted field";
           }
-          // console.log(" mapped filterd data: ",filteredData);
           this.filteredTasks.emit(filteredData);
         },
         (error) => {
@@ -153,57 +151,26 @@ import { error } from 'console';
 
     search() {
       let endpoint = `http://localhost:8090/apis/autoSuggest/${this.selectedField}/${encodeURIComponent(this.searchQuery)}`;
-      this.http.get<any[]>(endpoint).subscribe(
+      this.http.get<any[]>(endpoint , {headers : this.getAuthHeaders()}).subscribe(
         (response) => {
           this.searchResults = response;
+          console.log('the selected filed:', this.selectedField);
+          console.log('the search query:', this.searchQuery);
+          console.log('Raw Response:', response);
           this.searchResults = Array.from(new Set(this.searchResults.map(task => task.id)))
         .map(id => this.searchResults.find(task => task.id === id));
+        console.log('Processed Results:', this.searchResults);
         },
         (error) => {
           console.error('Error fetching search results:', error);
-        }
+        } 
       );
-    }
-    
-
-    // selectSuggestion(suggestion: any) {
-    //   const endpoint = `http://localhost:8090/apis/search?query=${encodeURIComponent(suggestion)}`;
-    //   console.log(`Fetching data for suggestion: ${suggestion}`);
-
-    //   this.http.get<any[]>(endpoint).subscribe(
-    //     (response) => {
-    //       this.tasks = response;
-    //       console.log('Received table data:', this.tasks);
-
-    //       this.filteredTasks.emit(this.tasks);
-    //       // this.resultsUpdated.emit(this.tasks); // Emit the tasks fetched
-
-    //     },
-    //     (error) => {
-    //       console.error('Error fetching suggestion details:', error);
-    //       this.tasks = [];
-    //     }
-    //   );
-    //   this.searchQuery = suggestion;
-    //   this.applyFilters();
-    // }
- 
-    // selectSuggestion(suggestion: any) {
-    //   this.searchQuery = suggestion; // Set the search query
-    //   this.applyFilters(); // Reapply filters with the selected suggestion
-    // } 
+    } 
 
     selectSuggestion(suggestion: any) {
-      // Set the search query to the selected suggestion
       this.searchQuery = suggestion;
-    
-      // Log the suggestion
       console.log(`Fetching data for suggestion: ${suggestion}`);
-    
-      // Reapply filters, including the new search query
       const filterQuery = this.constructFilterQuery();
-    
-      // Fetch filtered data from the backend
       this.http.post('optimizedes/_search', filterQuery).subscribe(
         (response: any) => {
           const filteredData = response.hits.hits.map((hit: any) => ({
@@ -222,14 +189,19 @@ import { error } from 'console';
         }
       );
     }
-    
-    
+    userRole = '';
+
     constructFilterQuery() {
       const query: any = {
         size: 500, 
-        query: { bool: {must: [] } },
+        query: { bool: 
+          {must:
+             [ ] } },
       };
+ 
+      if(this.userRole === 'ADMIN'){
 
+      
       if (this.selectedPriority) {
         query.query.bool.must.push({
           match: { 'priority.keyword': this.selectedPriority }
@@ -259,6 +231,7 @@ import { error } from 'console';
       }
     return query;
     }
+  }
 
     convertToEpoch(dateString: string): number {
       return new Date(dateString).getTime();

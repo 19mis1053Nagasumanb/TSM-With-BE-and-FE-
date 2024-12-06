@@ -1,4 +1,4 @@
-package com.example.taskmangementsystem.g.config;
+package com.example.taskmangementsystem.g.configs;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
@@ -18,8 +18,5 @@ public class ElasticsearchConfig {
         return new ElasticsearchClient(transport);
     }
 
-//    @Bean
-//    public ElasticsearchOperations elasticsearchOperations(ElasticsearchClient elasticsearchClient) {
-//        return new ElasticsearchTemplate(elasticsearchClient); // Use ElasticsearchRestTemplate
-//    }
+
 }

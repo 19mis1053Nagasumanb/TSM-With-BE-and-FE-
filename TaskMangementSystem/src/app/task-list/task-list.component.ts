@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Task } from '../Task';
 import { TaskService } from '../task.service';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-task-list',
@@ -23,12 +25,12 @@ export class TaskListComponent implements OnInit {
   noDataFound: boolean = false; 
   statusOptions = ['TODO', 'PENDING', 'ON_HOLD', 'DONE','IN_TEST','IN_PROGRESS']; 
   
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private http: HttpClient) {}
   
   ngOnInit(): void {
+
     this.getTasks(); 
   }
-
   getTasks(): void {
     this.taskService.getAllTasks().subscribe(
       (tasks: Task[]) => {
@@ -151,8 +153,9 @@ export class TaskListComponent implements OnInit {
 
   private transformTaskForUpdate(task: Task): any {
     const epochDate = new Date(task.date).getTime();
+    const timeString = task.time.toString();  // Convert to string if it's a number
 
-    const [hours, minutes, seconds] = task.time.split(':').map(Number);
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
     const totalMilliseconds = (hours * 3600 + minutes * 60 + seconds) * 1000;
 
     return {
@@ -190,12 +193,24 @@ export class TaskListComponent implements OnInit {
   }
 
   
-formatTime(timeString: string): string {
+// formatTime(timeString: string): string {
+//   if (!timeString) {
+//       return ''; 
+//   }
+//   return timeString.trim(); 
+// } 
+
+formatTime(timeString: string | number): string {
+  if (typeof timeString === 'number') {
+    timeString = timeString.toString();  // Convert number to string
+  }
+  
   if (!timeString) {
-      return ''; 
+    return ''; 
   }
   return timeString.trim(); 
 }
+
 
 // onFilteredTasks(filteredTasks: Task[]) {
 //   this.paginatedTasks = filteredTasks; 

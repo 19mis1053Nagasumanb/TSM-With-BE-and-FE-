@@ -14,6 +14,14 @@
       <div class="form-group">
         <label for="password">Password</label>
         <input id="password" type="password" formControlName="password" placeholder="Min-length of 6 characters " />
+      </div> 
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" formControlName="role">
+          <option value="USER">User</option>
+          <option value="ADMIN">Admin</option>
+        </select>
       </div>
   
       <button type="submit" [disabled]="signupForm.invalid">Signup</button>

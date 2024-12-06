@@ -1,10 +1,8 @@
-package com.example.taskmangementsystem.g.entity;
+package com.example.taskmangementsystem.g.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,13 +18,13 @@ import java.time.format.DateTimeFormatter;
 @Data
 @Document(indexName = "optimizedes")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class    Task {
+public class EsTask {
 
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Integer id;
+
+
     @Id
-    private String id = String.valueOf(System.currentTimeMillis());// Generates ID based on current time
-    private String name;
+    private String id ;// Generates ID based on current time
+    private String username;
     private String task;
     @Enumerated(EnumType.STRING)
     private TaskPriority priority;
@@ -78,4 +76,11 @@ public String getFormattedTime() {
         this.time = time;
     }
 
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private App_User appUser;
+
+
 }
+
+

@@ -4,5 +4,7 @@
   <nav class="nav-links" *ngIf="!isAuthPage">
     <a routerLink="/task-form" routerLinkActive="active">Entry Form</a>
     <a routerLink="/task-list" routerLinkActive="active">List</a>
-  </nav> 
+  </nav>
+  <button class="logout-btn" *ngIf="!isAuthPage" (click)="logout()">Logout</button>
+
 </header>

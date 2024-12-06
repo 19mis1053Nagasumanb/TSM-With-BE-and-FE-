@@ -3,6 +3,8 @@
     padding: 1rem 1.5rem; // Reduced padding to decrease height
     text-align: center; // Center text by default
     font-family: Arial, sans-serif; // Clean and modern font
+    width: 100%;
+    max-width: 1500px;
   
     .footer-content {
       display: flex;
@@ -14,7 +16,7 @@
     .footer-left {
       display: flex;
       align-items: center;
-      margin-bottom: 1.5rem; // Reduced space between the left section and horizontal line
+      margin-bottom: 1.5rem; 
   
       .footer-image {
         width: 80px; // Reduced image size

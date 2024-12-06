@@ -1,6 +1,5 @@
-<div class="task-container">
-  <h2>Hello {{ username || 'Guest'}}</h2>
-</div>
+<p *ngIf="username">Welcome, {{ username }}</p>
+
 <div class="container body">
     <form (ngSubmit)="onSubmit(entryForm)" #entryForm="ngForm">
         <div>
@@ -38,8 +37,8 @@
       </div> -->
   
       <div>
-        <label for="name">Name:</label>
-        <input type="text" name="name"[(ngModel)]="entry.name" required>
+        <label for="username">username:</label>
+        <input type="text" name="username"[(ngModel)]="entry.username" required>
       </div>
       <div>
         <label for="taskname">Task Title & Details:</label>

@@ -1,4 +1,4 @@
-package com.example.taskmangementsystem.g.entity;
+package com.example.taskmangementsystem.g.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,4 +21,9 @@ public class App_User {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = true)
+    private String role; // ROLE_USER or ROLE_ADMIN
+
+
 }

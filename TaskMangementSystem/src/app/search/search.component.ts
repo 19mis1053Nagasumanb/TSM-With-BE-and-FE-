@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Task } from '../Task';
 import { TaskStateServiceService } from '../task-state-service.service';
+import { TaskService } from '../task.service';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class SearchComponent implements OnInit {
   searchResults: any[] = [];
   tasks: any[] = []; 
   paginatedTasks : Task[] =[]
-  constructor(private http: HttpClient , private taskStateServiceService: TaskStateServiceService , private cd: ChangeDetectorRef) {}
+  constructor(private http: HttpClient , private taskStateServiceService: TaskStateServiceService , private cd: ChangeDetectorRef, private taskService: TaskService) {}
 
  
 
@@ -43,6 +44,7 @@ export class SearchComponent implements OnInit {
     this.resultsUpdated.emit([]); 
 
   }
+  
   search() {
     let endpoint = 'http://localhost:8090/apis/autoSuggest';
     if (this.selectedField) {
@@ -52,25 +54,28 @@ export class SearchComponent implements OnInit {
       endpoint += `/${encodeURIComponent(this.searchQuery)}`;
     }
     console.log(`Making request to: ${endpoint}`);
-    this.http.get<any[]>(endpoint).subscribe(
-      (response) => {
-        this.searchResults = response;
-        this.searchResults = Array.from(new Set(this.searchResults.map(task => task.id)))
-        .map(id => this.searchResults.find(task => task.id === id));
-        this.resultsUpdated.emit(response); 
-                console.log(response);
-
-
-      },
-      (error) => {
-        console.error('Error fetching data:', error);
-      }
-    );  
-
+  
+    this.http
+      .get<any[]>(endpoint, { headers: this.taskService.getAuthHeaders() })
+      .subscribe(
+        (response) => {
+          this.searchResults = response;
+          this.resultsUpdated.emit(response);
+          console.log(response);
+        },
+        (error) => {
+          if (error.status === 401) {
+            console.error('Unauthorized. Redirecting to login.');
+            // Redirect to login or show an error message
+          } else {
+            console.error('Error fetching data:', error);
+          }
+        }
+      );
+  
     this.searchChanged.emit(this.searchQuery);
-
-
   }
+  
   selectSuggestion(suggestion: string) {
     const endpoint = `http://localhost:8090/apis/search?query=${encodeURIComponent(suggestion)}`;
     console.log(`Fetching data for suggestion: ${suggestion}`);

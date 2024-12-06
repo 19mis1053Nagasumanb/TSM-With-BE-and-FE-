@@ -1,15 +1,19 @@
-package com.example.taskmangementsystem.g.controller;
+package com.example.taskmangementsystem.g.controllers;
 
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import com.example.taskmangementsystem.g.entity.Task;
-import com.example.taskmangementsystem.g.service.ESService;
-import com.example.taskmangementsystem.g.service.TaskService;
+import com.example.taskmangementsystem.g.models.EsTask;
+import com.example.taskmangementsystem.g.services.ESService;
+import com.example.taskmangementsystem.g.services.TaskService;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -20,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/apis")
 @CrossOrigin(origins = "http://localhost:4200")
+@Document(indexName = "optimizedES")
 @Slf4j
 public class TaskController {
 
@@ -29,13 +34,9 @@ public class TaskController {
     @Autowired
     private ESService esService;
 
-//    @GetMapping("/findAll")
-//    Iterable<Task>getAllTasks(){
-//        return taskService.getTask();
-//    }
-    @GetMapping("/findAll")
-    public List<Task> getAllTasks(
 
+    @GetMapping("/findAll")
+    public List<EsTask> getAllTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) {
         log.info("the size{}", size );
@@ -43,26 +44,34 @@ public class TaskController {
 
         return taskService.getTasksWithPagination(page, size);
     }
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/user-tasks")
+    public ResponseEntity<List<EsTask>> getUserTasks(@RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "10") int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        log.info("Logged-in users username: {}", username);
 
-
-
-
+        // Fetch tasks for the user
+        List<EsTask> tasks = taskService.getTasksByUsername(username, page, size);
+        if (tasks.isEmpty()) {
+            log.info("No tasks found for username : {}",username);
+        }
+        return ResponseEntity.ok(tasks);
+    }
     @PostMapping("/insert")
-    public ResponseEntity<?> createTask(@RequestBody Task task) {
+    public ResponseEntity<?> createTask(@RequestBody EsTask task) {
         try {
             log.info("the task {}",task);
             taskService.insertTask(task);
-//            return ResponseEntity.ok("Task created successfully");
-//            return ResponseEntity.ok(Map.of("message", "Task created successfully")); // Returning a JSON object
-      return ResponseEntity.ok(task);
+            return ResponseEntity.ok(task);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @DeleteMapping("/all")
     public ResponseEntity<String> deleteAllTasks(){
-        log.info("deleting all data {}",deleteAllTasks());
+        log.info("Deleting all tasks from the database");
         taskService.deleteAllTasks();
         return ResponseEntity.ok("All tasks deleted successfully");
     }
@@ -79,64 +88,35 @@ public class TaskController {
 
 
     @GetMapping("/{id}")
-    public Task getTasksById(@PathVariable String id){
+    public EsTask getTasksById(@PathVariable String id){
         System.out.println("Getting task by id");
         return taskService.getTaskById(id);
     }
 
     @PutMapping("/{id}")
-    public Task updateTasksById(@RequestBody Task task,@PathVariable String id){
+    public EsTask updateTasksById(@RequestBody EsTask task,@PathVariable String id){
         System.out.println("updating task by id"+id);
         return taskService.updateTask(task,id);
     }
 
 
     @GetMapping("/fuzzySearch/{approximateTaskName}")
-    public List<Task> fuzzySearch(
+    public List<EsTask> fuzzySearch(
             @PathVariable String approximateTaskName,
             @RequestParam(defaultValue = "AUTO") String fuzziness,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) throws IOException {
 
-        SearchResponse<Task> searchResponse = esService.fuzzySearch(approximateTaskName, fuzziness, page, size);
-        List<Hit<Task>> hitList = searchResponse.hits().hits();
+        SearchResponse<EsTask> searchResponse = esService.fuzzySearch(approximateTaskName, fuzziness, page, size);
+        List<Hit<EsTask>> hitList = searchResponse.hits().hits();
 
-        List<Task> taskList = new ArrayList<>();
+        List<EsTask> taskList = new ArrayList<>();
         log.info("the task list {}", taskList);
-        for (Hit<Task> hit : hitList) {
+        for (Hit<EsTask> hit : hitList) {
             taskList.add(hit.source());
         }
         return taskList;
     }
-
-//    @GetMapping("/searchWithSorting")
-//    public List<Task> searchWithSorting(
-//            @RequestParam String searchTerm,
-//            @RequestParam String sortField,
-//            @RequestParam String sortOrder,
-//            @RequestParam(defaultValue = "AUTO") String fuzziness) throws IOException {
-//
-//        SearchResponse<Task> searchResponse = esService.searchWithSorting(searchTerm, sortField, sortOrder, fuzziness);
-//        List<Hit<Task>> hitList = searchResponse.hits().hits();
-//        List<Task> taskList = new ArrayList<>();
-//        for (Hit<Task> hit : hitList) {
-//            taskList.add(hit.source());
-//        }
-//        return taskList;
-//    }
-
-//    @GetMapping("/searchWithSorting")
-//    public ResponseEntity<?> searchWithSorting(
-//            @RequestParam String searchTerm,
-//            @RequestParam String sortField,
-//            @RequestParam String sortOrder,
-//            @RequestParam String fuzziness) {
-//        try {
-//            return ResponseEntity.ok(esService.searchWithSorting(searchTerm, sortField, sortOrder, fuzziness));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-//        }
-//    }
 
     @GetMapping("/autoSuggest/{field}/{searchTerm}")
     public List<String> autoSuggestTaskSearch(
@@ -145,16 +125,18 @@ public class TaskController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) throws IOException {
 
-        SearchResponse<Task> searchResponse = esService.autoSuggestTask(searchTerm, field, page, size);
-        List<Hit<Task>> hitList = searchResponse.hits().hits();
+        SearchResponse<EsTask> searchResponse = esService.autoSuggestTask(searchTerm, field, page, size);
+        List<Hit<EsTask>> hitList = searchResponse.hits().hits();
+        log.info("the field:{}", field);
+        log.info("the searchTerm:{}", searchTerm);
 
         List<String> result = new ArrayList<>();
-        for (Hit<Task> hit : hitList) {
-            Task task = hit.source();
+        for (Hit<EsTask> hit : hitList) {
+            EsTask task = hit.source();
             if (task != null) {
                 switch (field) {
                     case "name":
-                        result.add(task.getName());
+                        result.add(task.getUsername());
                         break;
                     case "task":
                         result.add(task.getTask());
@@ -179,19 +161,12 @@ public class TaskController {
                 }
             }
         }
+        log.info("the result:{}", result);
         return result;
     }
 
-
-
-//    @GetMapping("/search")
-//    public List<Task>search(@RequestParam String query){
-//
-//        return taskService.searchByQuery(query);
-//    }
-
     @GetMapping("/search")
-    public List<Task> search(
+    public List<EsTask> search(
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) {
@@ -200,7 +175,7 @@ public class TaskController {
 
     //pagination
     @GetMapping("/pagination")
-    public List<Task> searchTasksWithPagination(
+    public List<EsTask> searchTasksWithPagination(
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {

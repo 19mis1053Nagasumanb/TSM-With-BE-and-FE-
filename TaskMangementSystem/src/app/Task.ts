@@ -1,13 +1,13 @@
 export interface Task {
 
-  id: string;
-  name: string;
+  id?: string;
+  username: string;
   task: string;
   day: string;
 
   priority: string;
   logHours: string;
   status: string;
-  date: string;
-  time: string;
+  date: string | number;
+  time: string | number;
 }

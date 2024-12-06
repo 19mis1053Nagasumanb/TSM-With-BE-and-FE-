@@ -1,45 +1,96 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, Subject } from 'rxjs';
 import { Task } from './Task';
+import { AuthService } from './auth.service';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
+
   
   private apiUrl = 'http://localhost:8090/apis';
   private elasticsearchUrl = '/optimizedes/_search';
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
+  public getAuthHeaders(): { [header: string]: string } {
+    const token = localStorage.getItem('jwtToken');
+    return {
+      Authorization: `Bearer ${token}`,
+    };
+  }
+  
   
   getAllTasks(): Observable<Task[]> {
-    console.log("Hitting getAll");
-    
-    return this.http.get<Task[]>(`${this.apiUrl}/findAll`).pipe(
-      map(response => {
-        return response; 
-      }),
-      catchError((error: any) => {
-        console.error('Error fetching tasks:', error);
-        return of([]); 
-      })
-    );
+    const token = localStorage.getItem('jwtToken');
+    const userRole = localStorage.getItem('userRole');
+  
+    if (!token || !userRole) {
+      return of([]); // Handle case where token or role is missing
+    }
+  
+    let endpoint = '';
+    if (userRole === 'USER') {
+      endpoint = '/user-tasks'; // Endpoint for regular users
+    } else if (userRole === 'ADMIN') {
+      endpoint = '/findAll'; // Endpoint for admin users
+    } else {
+      return of([]); // Handle unrecognized roles
+    }
+  
+    return this.http
+      .get<Task[]>(`${this.apiUrl}${endpoint}`, { headers: this.getAuthHeaders() })
+      .pipe(
+        catchError((error) => {
+          console.error('Error fetching tasks:', error);
+          return of([]); // Return empty array in case of error
+        })
+      );
   }
-  createTask(task: any): Observable<string> {
-    return this.http.post<string>(`${this.apiUrl}/insert`, task);
+  
+  
+  
+  // createTask(task: any): Observable<string> {
+  //   const token = this.authService.getToken();
+  //   const headers = {
+  //     Authorization: `Bearere ${token}`
+  //   };
+  //   return this.http.post<string>(`${this.apiUrl}/insert`, task, {headers});
+  // } 
+
+  // createTask(task: any): Observable<string> {
+  //   const token = localStorage.getItem('jwtToken'); // Assuming the token is stored in localStorage
+  //   const headers = {
+  //     Authorization: `Bearer ${token}`,
+  //   };
+  
+  //   return this.http.post<string>(`${this.apiUrl}/insert`, task, { headers });
+  // } 
+
+  createTask(task: Task): Observable<string> {
+    return this.http
+      .post<string>(`${this.apiUrl}/insert`, task, { headers: this.getAuthHeaders() })
+      .pipe(catchError((error) => of(error.message || 'Task creation failed')));
   }
+
+  
   
   
   updateTask(id: string, task: Task): Observable<Task> {
-    return this.http.put<Task>(`${this.apiUrl}/${id}`, task);
+    return this.http.
+    put<Task>(`${this.apiUrl}/${id}`, task, {headers: this.getAuthHeaders() })
+    .pipe(catchError((error) => of(error.message || 'Task update failed')));
   }
   
 
   deleteTask(id: string): Observable<string> {
-    return this.http.delete<string>(`${this.apiUrl}/${id}`);
+    return this.http
+    .delete<string>(`${this.apiUrl}/${id}`,{ headers: this.getAuthHeaders() })
+    .pipe(catchError((error)=> of(error.message || 'Task deletion failed')));
   }
 
   
@@ -68,6 +119,9 @@ export class TaskService {
   //  getPaginatedTasks(page: number, size: number): Observable<{ tasks: Task[], total: number }> {
   //   return this.http.get<{ tasks: Task[], total: number }>(`${this.apiUrl}?page=${page}&size=${size}`);
   // }
+
+  
+  
   
   fuzzySearch(approximateTaskName: string): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/fuzzySearch/${approximateTaskName}`);

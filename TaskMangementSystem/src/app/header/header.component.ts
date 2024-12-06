@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-header',
@@ -9,10 +10,14 @@ import { NavigationEnd, Router } from '@angular/router';
 export class HeaderComponent {
   isAuthPage: boolean = false;
 
-  constructor(private router: Router) {}
+
+  constructor(private router: Router, private authService: AuthService) {}
+
 
   ngOnInit(): void {
     this.checkCurrentRoute();
+
+
 
     // Subscribe to route changes to dynamically update the state
     this.router.events.subscribe((event) => {
@@ -25,6 +30,15 @@ export class HeaderComponent {
   private checkCurrentRoute(): void {
     const authRoutes = ['/login', '/signup'];
     this.isAuthPage = authRoutes.includes(this.router.url);
+  } 
+
+   // Logout method
+   logout(): void {
+    const confirmation = window.confirm('Are you sure you want to logout?');
+    if (confirmation) {
+      this.authService.logout();
+      this.router.navigate(['/login']);  // Navigate to the login page
+    }
   }
 }
 

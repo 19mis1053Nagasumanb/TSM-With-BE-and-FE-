@@ -1,4 +1,4 @@
-package com.example.taskmangementsystem.g.util;
+package com.example.taskmangementsystem.g.utils;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
